@@ -90,12 +90,12 @@ public class InstanceExtensionRequestService {
             request.setExtensionDate(terminationDate);
             this.save(request);
 
-            this.grantExtension(instance, terminationDate, null, true);
-
             // Send email to admin
             comments = comments == null ? "" : comments + "\n\n--------------------\n\n";
             comments += "Extension request has been automatically accepted!";
             this.emailManager.sendInstanceExtensionRequestNotification(instance, comments, true);
+
+            this.grantExtension(instance, terminationDate, null, true);
 
         } else {
             logger.info("Instance extension request created for instance {} with comments: {}. Email sent to admins.", instance.getId(), comments);
