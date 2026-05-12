@@ -1,16 +1,10 @@
 package eu.ill.visa.web.graphql.resources;
 
-import eu.ill.visa.business.services.CloudClientService;
-import eu.ill.visa.business.services.CloudProviderService;
-import eu.ill.visa.business.services.ImageProtocolService;
-import eu.ill.visa.business.services.ImageService;
+import eu.ill.visa.business.services.*;
 import eu.ill.visa.cloud.domain.CloudImage;
 import eu.ill.visa.cloud.exceptions.CloudException;
 import eu.ill.visa.cloud.services.CloudClient;
-import eu.ill.visa.core.entity.CloudProviderConfiguration;
-import eu.ill.visa.core.entity.Image;
-import eu.ill.visa.core.entity.ImageProtocol;
-import eu.ill.visa.core.entity.Role;
+import eu.ill.visa.core.entity.*;
 import eu.ill.visa.web.graphql.exceptions.EntityNotFoundException;
 import eu.ill.visa.web.graphql.exceptions.InvalidInputException;
 import eu.ill.visa.web.graphql.inputs.ImageInput;
@@ -24,6 +18,8 @@ import jakarta.validation.constraints.NotNull;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +28,25 @@ import java.util.List;
 @RolesAllowed(Role.ADMIN_ROLE)
 public class ImageResource {
 
+    private static final Logger logger = LoggerFactory.getLogger(ImageResource.class);
+
     private final ImageService imageService;
     private final ImageProtocolService imageProtocolService;
     private final CloudClientService cloudClientService;
     private final CloudProviderService cloudProviderService;
+    private final PlanService planService;
 
     @Inject
     public ImageResource(final ImageService imageService,
                          final ImageProtocolService imageProtocolService,
                          final CloudClientService cloudClientService,
-                         final CloudProviderService cloudProviderService) {
+                         final CloudProviderService cloudProviderService,
+                         final PlanService planService) {
         this.imageService = imageService;
         this.imageProtocolService = imageProtocolService;
         this.cloudClientService = cloudClientService;
         this.cloudProviderService = cloudProviderService;
+        this.planService = planService;
     }
 
     /**
@@ -85,6 +86,27 @@ public class ImageResource {
         this.mapToImage(input, image);
         image.setDeleted(false);
         imageService.save(image);
+
+        // Clone plans if requested
+        if (input.getClonePlansFromImageId() != null) {
+            final Image clonedImage = imageService.getById(input.getClonePlansFromImageId());
+            if (clonedImage == null) {
+                logger.warn("Image with id {} was not found so unable to clone plans", input.getClonePlansFromImageId());
+            } else {
+                List<Plan> plans = this.planService.getAllForAdmin().stream()
+                    .filter(plan -> plan.getImage().getId().equals(input.getClonePlansFromImageId()))
+                    .toList();
+
+                plans.forEach(plan -> {
+                    final Plan clonedPlan = new Plan();
+                    clonedPlan.setFlavour(plan.getFlavour());
+                    clonedPlan.setImage(image);
+                    clonedPlan.setPreset(false);
+                    planService.create(clonedPlan);
+                });
+            }
+        }
+
         return new ImageType(image);
     }
 

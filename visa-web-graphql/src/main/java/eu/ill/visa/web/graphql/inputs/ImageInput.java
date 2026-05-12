@@ -29,6 +29,7 @@ public class ImageInput {
     private @NotNull @AdaptToScalar(Scalar.Int.class) Long defaultVdiProtocolId;
     private @AdaptToScalar(Scalar.Int.class) Long secondaryVdiProtocolId;
     private Image.AutoAcceptExtensionRequest autoAcceptExtensionRequest;
+    private @AdaptToScalar(Scalar.Int.class) Long clonePlansFromImageId;
 
     public String getName() {
         return name;
@@ -132,5 +133,13 @@ public class ImageInput {
 
     public void setAutoAcceptExtensionRequest(Image.AutoAcceptExtensionRequest autoAcceptExtensionRequest) {
         this.autoAcceptExtensionRequest = autoAcceptExtensionRequest;
+    }
+
+    public Long getClonePlansFromImageId() {
+        return clonePlansFromImageId;
+    }
+
+    public void setClonePlansFromImageId(Long clonePlansFromImageId) {
+        this.clonePlansFromImageId = clonePlansFromImageId;
     }
 }
