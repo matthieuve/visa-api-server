@@ -10,4 +10,10 @@ public interface DesktopConfiguration {
     @WithName("keyboardLayouts")
     String keyboardLayoutsJson();
 
+    @WithName("screenResizingEnabled")
+    boolean screenResizingEnabled();
+
+    @WithName("autoScreenResize")
+    boolean autoScreenResize();
+
 }

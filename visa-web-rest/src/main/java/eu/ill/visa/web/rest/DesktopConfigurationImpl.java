@@ -17,6 +17,8 @@ public class DesktopConfigurationImpl {
 
     private final List<Host> allowedClipboardUrlHosts;
     private final List<KeyboardLayout> keyboardLayouts;
+    private final boolean screenResizingEnabled;
+    private final boolean autoScreenResize;
 
     @Inject
     public DesktopConfigurationImpl(final DesktopConfiguration configuration) {
@@ -34,6 +36,8 @@ public class DesktopConfigurationImpl {
             logger.error("Failed to deserialize configuration value keyboardLayouts: {}", configuration.keyboardLayoutsJson());
             throw new RuntimeException(e);
         }
+        this.screenResizingEnabled = configuration.screenResizingEnabled();
+        this.autoScreenResize = configuration.autoScreenResize();
     }
 
     public List<Host> getAllowedClipboardUrlHosts() {
@@ -44,6 +48,13 @@ public class DesktopConfigurationImpl {
         return keyboardLayouts;
     }
 
+    public boolean isScreenResizingEnabled() {
+        return screenResizingEnabled;
+    }
+
+    public boolean isAutoScreenResize() {
+        return autoScreenResize;
+    }
 
     /**
      * Get a keyboard layout for a given layout

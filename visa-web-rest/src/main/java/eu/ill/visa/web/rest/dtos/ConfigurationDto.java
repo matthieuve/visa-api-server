@@ -147,10 +147,14 @@ public class ConfigurationDto {
     public static class DesktopConfigurationDto {
         private final List<DesktopConfigurationImpl.Host> allowedClipboardUrlHosts;
         private final List<DesktopConfigurationImpl.KeyboardLayout> keyboardLayouts;
+        private final boolean screenResizingEnabled;
+        private final boolean autoScreenResize;
 
         public DesktopConfigurationDto(final DesktopConfigurationImpl configuration) {
             this.allowedClipboardUrlHosts = configuration.getAllowedClipboardUrlHosts();
             this.keyboardLayouts = configuration.getKeyboardLayouts();
+            this.screenResizingEnabled = configuration.isScreenResizingEnabled();
+            this.autoScreenResize = configuration.isAutoScreenResize();
         }
 
         public List<DesktopConfigurationImpl.Host> getAllowedClipboardUrlHosts() {
@@ -159,6 +163,14 @@ public class ConfigurationDto {
 
         public List<DesktopConfigurationImpl.KeyboardLayout> getKeyboardLayouts() {
             return keyboardLayouts;
+        }
+
+        public boolean isScreenResizingEnabled() {
+            return screenResizingEnabled;
+        }
+
+        public boolean isAutoScreenResize() {
+            return autoScreenResize;
         }
     }
 

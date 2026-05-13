@@ -175,6 +175,8 @@ client:
   desktop:
     allowedClipboardUrlHosts: ${VISA_CLIENT_CONFIG_DESKTOP_ALLOWED_CLIPBOARD_URL_HOSTS:[]}
     keyboardLayouts: ${VISA_CLIENT_CONFIG_DESKTOP_KEYBOARD_LAYOUTS:[]}
+    screenResizingEnabled: ${VISA_CLIENT_CONFIG_DESKTOP_SCREEN_RESIZING_ENABLED:true}
+    autoScreenResize: ${VISA_CLIENT_CONFIG_DESKTOP_AUTO_SCREEN_RESIZE:true}
   contactEmail: ${VISA_CLIENT_CONFIG_CONTACT_EMAIL}
   experiments:
     openDataIncluded: ${VISA_CLIENT_CONFIG_INCLUDE_OPEN_DATA:false}
