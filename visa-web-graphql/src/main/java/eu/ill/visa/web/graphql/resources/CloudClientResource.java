@@ -79,7 +79,9 @@ public class CloudClientResource {
     public @NotNull List<CloudImageType> cloudImages(@AdaptToScalar(Scalar.Int.class) @NotNull Long cloudId) throws DataFetchingException {
         try {
             CloudClient cloudClient = this.getCloudClient(cloudId);
-            return cloudClient.images().stream().map(CloudImageType::new).toList();
+            return cloudClient.images().stream()
+                .filter(cloudImage -> cloudImage.getSize() != null)
+                .map(CloudImageType::new).toList();
         } catch (DataFetchingException e) {
             throw e;
         } catch (Exception exception) {
