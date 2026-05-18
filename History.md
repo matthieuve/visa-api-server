@@ -1,5 +1,6 @@
 3.8.3 18/05/2026
 ================
+ * Filter cloud images with null sizes (upload of image in progress)
  * Add InstanceStateRecord to store history of instance state changes.
  * Add desktop resizing properties to client desktop config: disable resizing if not available; auto-resize as an option (default true).
  * auto-grant instance extension after sending request email.
