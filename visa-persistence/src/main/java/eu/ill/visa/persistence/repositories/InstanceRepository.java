@@ -627,6 +627,15 @@ public class InstanceRepository extends AbstractRepository<Instance> {
         }
     }
 
+    public void saveStateRecord(InstanceStateRecord stateRecord) {
+        final EntityManager entityManager = getEntityManager();
+        if (stateRecord.getId() == null) {
+            entityManager.persist(stateRecord);
+        } else {
+            entityManager.merge(stateRecord);
+        }
+    }
+
     public InstancePartial getPartialById(Long id) {
         try {
             final TypedQuery<InstancePartial> query = getEntityManager().createNamedQuery("instance.getPartialById", InstancePartial.class);

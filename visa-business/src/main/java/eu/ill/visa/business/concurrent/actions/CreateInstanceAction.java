@@ -89,6 +89,7 @@ public class CreateInstanceAction extends InstanceAction {
             }
 
             this.getInstanceService().updateState(instance, instanceState);
+            this.getInstanceService().saveStateRecord(new InstanceStateRecord(instance, InstanceState.UNKNOWN, instanceState));
 
             this.getInstanceService().save(instance);
             this.getEmailManager().sendInstanceCreatedNotification(instance);

@@ -204,6 +204,7 @@ public class InstanceService {
             instance.setActiveAt(new Date());
         }
 
+        InstanceState oldState = instance.getState();
         instance.setState(state);
 
         // Soft delete if necessary
@@ -212,6 +213,11 @@ public class InstanceService {
 
         } else {
             this.save(instance);
+        }
+
+        if (!oldState.equals(state)) {
+            InstanceStateRecord stateRecord = new InstanceStateRecord(instance, oldState, state);
+            this.repository.saveStateRecord(stateRecord);
         }
 
         if (errorsChanged) {
@@ -498,6 +504,10 @@ public class InstanceService {
 
     public Long countAllForUserAndRole(User user, InstanceMemberRole role) {
         return repository.countAllForUserAndRole(user, role);
+    }
+
+    public void saveStateRecord(InstanceStateRecord stateRecord) {
+        this.repository.saveStateRecord(stateRecord);
     }
 
     public void createOrUpdateThumbnailByInstanceId(Long instanceId, String instanceUid, byte[] data) {
