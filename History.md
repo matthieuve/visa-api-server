@@ -1,3 +1,11 @@
+3.8.3 18/05/2026
+================
+ * Add InstanceStateRecord to store history of instance state changes.
+ * Add desktop resizing properties to client desktop config: disable resizing if not available; auto-resize as an option (default true).
+ * auto-grant instance extension after sending request email.
+ * Clone plans of another image when creating an image if requested.
+ * Don't email the booking request owner if they assign themselves a voucher.
+
 3.8.2 25/03/2026
 ================
  - Store the time at which the instance first become active or partially active (for stats on creation time).
