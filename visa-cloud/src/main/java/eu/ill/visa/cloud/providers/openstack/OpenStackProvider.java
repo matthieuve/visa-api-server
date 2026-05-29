@@ -17,9 +17,9 @@ import java.util.*;
 public class OpenStackProvider implements CloudProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenStackProvider.class);
-    private static final int FLAVOUR_REFRESH_TIME_MINUTES = 5;
+    private static final int FLAVOUR_REFRESH_TIME_MINUTES = 1;
     private static final int SECURITY_GROUPS_REFRESH_TIME_MINUTES = 10;
-    private static final int HYPERVISOR_REFRESH_TIME_MINUTES = 5;
+    private static final int HYPERVISOR_REFRESH_TIME_MINUTES = 1;
 
     private final OpenStackProviderConfiguration openStackConfiguration;
 
