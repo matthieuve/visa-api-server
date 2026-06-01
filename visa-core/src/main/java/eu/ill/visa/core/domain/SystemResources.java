@@ -291,7 +291,8 @@ public record SystemResources(Long cloudId, Date availabilityDate, CloudResource
         // Take into account device pool usage/manual limits
         for (FlavourDevice device : managedDevices) {
             final AvailabilityData devicePoolAvailability = devicePoolUsages.stream()
-                .filter(aUsage -> device.getDevicePool().getResourceClass().equals(aUsage.getResourceClass()))
+                .filter(devicePoolUsage -> device.getDevicePool().getResourceClass().equals(devicePoolUsage.getResourceClass()))
+                .filter(devicePoolUsage -> devicePoolUsage.getAvailableUnits() != null && devicePoolUsage.getTotalUnits() != null)
                 .map(devicePoolUsage -> {
                     return new AvailabilityData((long)devicePoolUsage.getAvailableUnits(), (long)devicePoolUsage.getTotalUnits(), flavourUsage);
                 })
