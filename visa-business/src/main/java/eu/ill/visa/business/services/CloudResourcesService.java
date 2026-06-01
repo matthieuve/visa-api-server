@@ -66,6 +66,10 @@ public class CloudResourcesService {
         cloudClients.forEach(cloudClient -> {
             try {
                 CloudLimit cloudLimit = cloudClient.getProvider().limits();
+                if (cloudLimit == null) {
+                    logger.warn("Cloud limits from CloudClient are null");
+                    return;
+                }
 
                 allResources.stream().filter(resources -> {
                     long resourceCloudId = resources.getCloudId() == null ? -1 : resources.getCloudId();
