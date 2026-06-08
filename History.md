@@ -1,3 +1,10 @@
+3.8.4 08/06/2026
+================
+ * Improved transition from hypervisor-determined and cloud-resources-determined flavour availabilities (booking periods). Ensure that cloud resources are limited also by the hypervisor resources.
+ * Handle null pointer when obtaining cloud limits.
+ * Fix null pointer exception when device pool data can't be obtained.
+ * reduce cache time on hypervisors and flavours.
+
 3.8.3 18/05/2026
 ================
  * Filter cloud images with null sizes (upload of image in progress)
