@@ -36,7 +36,31 @@ public record SystemResources(Long cloudId, Date availabilityDate, CloudResource
     public SystemResources onResourcesModification(final ResourceUsageModifier resourceModifier) {
         Date date = resourceModifier.modificationDate();
 
-        CloudResources cloudResources = this.cloudResources == null ? null : this.cloudResources.onResourcesModification(resourceModifier);
+        CloudResources cloudResources = null;
+        if (this.cloudResources != null) {
+            // Check if we're going to a booking period for which we can't use the hypervisor data. However, we need to ensure that the totals and availabilities
+            // remove coherent which what the hypervisors provide, not exceeding them
+            if (this.bookedResourcesIds.isEmpty() && resourceModifier.associatedBookingId() != null && !this.hypervisorInventories.isEmpty()) {
+                Long memoryMbTotal = this.hypervisorInventories.stream().map(HypervisorInventory::totalMemoryMB).reduce(0L, Long::sum);
+                Long cpuTotal = this.hypervisorInventories.stream().map(HypervisorInventory::totalCPUs).reduce(0L, Long::sum);
+                Long memoryMbAvailable = this.hypervisorInventories.stream().map(HypervisorInventory::memoryMBAvailable).reduce(0L, Long::sum);
+                Long cpusAvailable = this.hypervisorInventories.stream().map(HypervisorInventory::cpusAvailable).reduce(0L, Long::sum);
+
+                CloudResources mergedResources = CloudResources.Builder()
+                    .instancesTotal(this.cloudResources.getInstancesTotal())
+                    .instancesUsage(this.cloudResources.getInstancesUsage())
+                    .memoryMbTotal(Math.min(this.cloudResources.getMemoryMbTotal(), memoryMbTotal))
+                    .memoryMbUsage(memoryMbAvailable < this.cloudResources.getMemoryMBAvailable() ? memoryMbTotal - memoryMbAvailable : this.cloudResources.getMemoryMbUsage())
+                    .vcpuTotal(Math.min(this.cloudResources.getVcpuTotal(), cpuTotal))
+                    .vcpuUsage(cpusAvailable < this.cloudResources.getVcpuAvailable() ? cpuTotal - cpusAvailable : this.cloudResources.getVcpuUsage())
+                    .build();
+
+                cloudResources = mergedResources.onResourcesModification(resourceModifier);
+
+            } else {
+                cloudResources = this.cloudResources.onResourcesModification(resourceModifier);
+            }
+        }
 
         FlavourUsages modifiedFlavourUsages = this.flavourUsages.combine(resourceModifier.flavourUsages());
 
